@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.babylo.banksampah.dto.UserDto;
 import com.babylo.banksampah.dto.UserResponseDto;
-import com.babylo.banksampah.entities.User;
 import com.babylo.banksampah.responses.ApiResponse;
 import com.babylo.banksampah.services.UserService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/save")
-    public ApiResponse<UserResponseDto> postMethodName(@RequestBody UserDto request) {
+    public ApiResponse<UserResponseDto> postMethodName(@Valid @RequestBody UserDto request) {
         UserResponseDto user = userService.addUser(request);
         return new ApiResponse<>("success", "User added successfully", user);
     }
