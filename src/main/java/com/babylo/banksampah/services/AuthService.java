@@ -1,7 +1,5 @@
 package com.babylo.banksampah.services;
 
-import java.util.HashMap;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -13,10 +11,7 @@ import com.babylo.banksampah.dto.UserResponseDto;
 import com.babylo.banksampah.entities.User;
 import com.babylo.banksampah.exception.UnauthorizedException;
 import com.babylo.banksampah.repositories.UserRepository;
-import com.babylo.banksampah.responses.ApiResponse;
 import com.babylo.banksampah.security.BCrypt;
-
-import ch.qos.logback.core.subst.Token;
 
 @Service
 public class AuthService {
