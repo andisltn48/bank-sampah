@@ -18,7 +18,7 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtService { 
     public static final String SECRET = "9D0EB6B1C2E1FAD0F53A248F6C3B5E4E2F6D8G3H1I0J7K4L1M9N2O3P5Q0R7S9T1U4V2W6X0Y32"; 
-    public static final Integer EXPIRATION_TIME = 3600000; 
+    public static final Integer EXPIRATION_TIME = 86400000; 
     public String generateToken(String userName) { 
         Map<String, Object> claims = new HashMap<>(); 
         return createToken(claims, userName); 
