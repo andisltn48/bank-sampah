@@ -29,13 +29,14 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserRepository repository) { 
         return new UserService(repository); 
-    } 
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception { 
         return http
             .authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/api/login", "/api/register").permitAll()
-                .requestMatchers("/api/v1/**").authenticated()
+                .requestMatchers("/api/**").authenticated()
             )
             .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())
             .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
