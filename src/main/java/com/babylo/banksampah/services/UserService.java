@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.babylo.banksampah.dto.UserDto;
 import com.babylo.banksampah.dto.UserResponseDto;
 import com.babylo.banksampah.entities.User;
+import com.babylo.banksampah.exception.UniqueFieldException;
 import com.babylo.banksampah.repositories.UserRepository;
 import com.babylo.banksampah.security.BCrypt;
 
@@ -27,6 +28,11 @@ public class UserService implements UserDetailsService {
     }
 
     public UserResponseDto addUser(UserDto user) {
+        User userExist = userRepository.findByUsername(user.getUsername()).orElse(null);
+        if (userExist != null) {
+            throw new UniqueFieldException("Username already exist");
+        }
+
         User newUser = new User();
         newUser.setUsername(user.getUsername());
         newUser.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));

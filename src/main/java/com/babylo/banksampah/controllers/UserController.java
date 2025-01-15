@@ -1,6 +1,8 @@
 package com.babylo.banksampah.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,10 +24,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/save")
-    public ApiResponse<UserResponseDto> postMethodName(@Valid @RequestBody UserDto request) {
-        UserResponseDto user = userService.addUser(request);
-        return new ApiResponse<>("success", "User added successfully", user);
+    @PostMapping()
+    public ResponseEntity<ApiResponse<UserResponseDto>> addUser(@Valid @RequestBody UserDto request) {
+        ApiResponse<UserResponseDto> user = new ApiResponse<>(userService.addUser(request));
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
     
 }

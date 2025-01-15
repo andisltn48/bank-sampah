@@ -11,7 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.babylo.banksampah.responses.ApiResponse;
+import com.babylo.banksampah.responses.ErrorResponse;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     // Handle MethodArgumentNotValidException (triggered by @Valid validation failure)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         BindingResult result = ex.getBindingResult();
         
@@ -30,10 +30,11 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         }
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        ErrorResponse<Map<String, String>> errorResponse = new ErrorResponse<>(errors);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> constraintViolationException(ConstraintViolationException e) {
+    public ResponseEntity<ErrorResponse<Map<String, String>>> constraintViolationException(ConstraintViolationException e) {
         Map<String, String> errors = new HashMap<>();
 
         e.getConstraintViolations().forEach(constraintViolation -> {
@@ -42,16 +43,19 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        ErrorResponse<Map<String, String>> errorsResponse = new ErrorResponse<>(errors);
+        return new ResponseEntity<>(errorsResponse, HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ApiResponse<String>> handleUnauthorizedException(UnauthorizedException e) {
-        ApiResponse<String> errorResponse = new ApiResponse<>(
-            "error", 
-            e.getMessage(), 
-            null
-        );
+    public ResponseEntity<ErrorResponse<String>> handleUnauthorizedException(UnauthorizedException e) {
+        ErrorResponse<String> errorResponse = new ErrorResponse<>(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+    
+    @ExceptionHandler(UniqueFieldException.class)
+    public ResponseEntity<ErrorResponse<String>> uniqueFieldException(UniqueFieldException e) {
+        ErrorResponse<String> errorResponse = new ErrorResponse<>(e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 }

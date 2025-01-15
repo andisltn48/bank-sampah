@@ -1,6 +1,9 @@
 package com.babylo.banksampah.controllers;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.babylo.banksampah.dto.LoginUserDto;
@@ -23,15 +26,16 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/api/register")
-    public ApiResponse<UserResponseDto> register(@Valid @RequestBody UserDto request) {
+    public ResponseEntity<ApiResponse<UserResponseDto>> register(@Valid @RequestBody UserDto request) {
         UserResponseDto user = authService.register(request);
-        return new ApiResponse<>("success", "User added successfully", user);
+        
+        return new ResponseEntity<>(new ApiResponse<>(user), HttpStatus.OK);
     }
 
     @PostMapping("/api/login")
-    public ApiResponse<TokenResponseDto> login(@Valid @RequestBody LoginUserDto request) {
+    public ResponseEntity<ApiResponse<TokenResponseDto>> login(@Valid @RequestBody LoginUserDto request) {
         TokenResponseDto token = authService.login(request);
-        return new ApiResponse<>("success", "User added successfully", token);
+        return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.OK);
     }
     
 }
