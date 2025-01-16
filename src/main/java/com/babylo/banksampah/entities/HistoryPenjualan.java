@@ -20,8 +20,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "history_pembelian")
-public class HistoryPembelian {
+@Table(name = "history_penjualan")
+public class HistoryPenjualan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,5 +44,4 @@ public class HistoryPembelian {
     public void preUpdate() {
         updatedAt = new Timestamp(System.currentTimeMillis());
     }
-    
 }

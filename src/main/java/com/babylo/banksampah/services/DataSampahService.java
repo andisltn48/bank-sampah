@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import com.babylo.banksampah.dto.DataSampahDto;
 import com.babylo.banksampah.entities.DataSampah;
 import com.babylo.banksampah.entities.HistoryPembelian;
+import com.babylo.banksampah.entities.HistoryPenjualan;
 import com.babylo.banksampah.entities.ListHistorySampah;
 import com.babylo.banksampah.exception.DataNotFoundException;
 import com.babylo.banksampah.repositories.DataSampahRepository;
 import com.babylo.banksampah.repositories.HistoryPembelianRepository;
+import com.babylo.banksampah.repositories.HistoryPenjualanRepository;
 import com.babylo.banksampah.repositories.ListHistorySampahRepository;
 
 import jakarta.transaction.Transactional;
@@ -29,6 +31,9 @@ public class DataSampahService {
 
     @Autowired
     private ListHistorySampahRepository listHistorySampahRepository;
+    
+    @Autowired
+    private HistoryPenjualanRepository historyPenjualanRepository;
 
     public DataSampah addDataSampah(DataSampahDto dataSampahDto) {
         DataSampah dataSampah = new DataSampah();
@@ -104,6 +109,42 @@ public class DataSampahService {
             listHistorySampah.setIdSampah(idSampah);
             listHistorySampah.setJumlah(jumlah);
             listHistorySampah.setHarga(totalHarga);
+            listHistorySampah.setType("Pembelian");
+            listHistorySampahRepository.save(listHistorySampah);
+        }
+    }
+    
+    @Transactional
+    public void penjualanSampah(List<Map<String, Object>> listSampah) {
+        HistoryPenjualan historyPenjualan = new HistoryPenjualan();
+        
+        HistoryPenjualan savedHistoryPenjualan = historyPenjualanRepository.save(historyPenjualan);
+        for (Map<String, Object> map : listSampah) {
+            Long idSampah = ((Integer) map.get("id")).longValue();
+            Optional<DataSampah> dataSampah = dataSampahRepository.findById(idSampah);
+            if (dataSampah.isPresent() == false) {
+                historyPembelianRepository.deleteById(savedHistoryPenjualan.getId());
+                throw new DataNotFoundException("Data sampah tidak ditemukan");
+            }
+
+            DataSampah existDataSampah = dataSampah.get();
+            Object valueJumlah = map.get("jumlah");
+
+            Float jumlah = (float)0;
+            if (valueJumlah instanceof Double) {
+                jumlah = ((Double) valueJumlah).floatValue();
+            } else if (valueJumlah instanceof Integer) {
+                jumlah = ((Integer) valueJumlah).floatValue(); 
+            }
+            // Float jumlah = ((Double) map.get("jumlah")).floatValue();
+            Long totalHarga = ((Integer) Math.round(existDataSampah.getHargaBeli() * jumlah)).longValue();
+            ListHistorySampah listHistorySampah = new ListHistorySampah();
+
+            listHistorySampah.setIdHistory(savedHistoryPenjualan.getId());
+            listHistorySampah.setIdSampah(idSampah);
+            listHistorySampah.setJumlah(jumlah);
+            listHistorySampah.setHarga(totalHarga);
+            listHistorySampah.setType("Penjualan");
             listHistorySampahRepository.save(listHistorySampah);
         }
     }

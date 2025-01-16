@@ -30,4 +30,6 @@ public class ListHistorySampah {
     private Float jumlah;
 
     private Long harga;
+
+    private String type;
 }

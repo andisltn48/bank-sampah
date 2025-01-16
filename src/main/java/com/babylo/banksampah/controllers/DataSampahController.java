@@ -67,6 +67,10 @@ public class DataSampahController {
         dataSampahService.pembelianSampah(request.getListSampah());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
-    
-    
+
+    @PostMapping("/penjualan")
+    public ResponseEntity<Void> penjualanSampah(@Valid @RequestBody PembelianSampahDto request) {
+        dataSampahService.penjualanSampah(request.getListSampah());
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }
