@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.babylo.banksampah.dto.DataSampahDto;
-import com.babylo.banksampah.dto.PembelianSampahDto;
+import com.babylo.banksampah.dto.HistorySampahDto;
 import com.babylo.banksampah.entities.DataSampah;
+import com.babylo.banksampah.entities.HistoryPembelian;
+import com.babylo.banksampah.entities.HistoryPenjualan;
 import com.babylo.banksampah.responses.ApiResponse;
 import com.babylo.banksampah.services.DataSampahService;
 
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -63,14 +67,29 @@ public class DataSampahController {
     }
 
     @PostMapping("/pembelian")
-    public ResponseEntity<Void> pembelianSampah(@Valid @RequestBody PembelianSampahDto request) {
+    public ResponseEntity<Void> pembelianSampah(@Valid @RequestBody HistorySampahDto request) {
         dataSampahService.pembelianSampah(request.getListSampah());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping("/penjualan")
-    public ResponseEntity<Void> penjualanSampah(@Valid @RequestBody PembelianSampahDto request) {
+    public ResponseEntity<Void> penjualanSampah(@Valid @RequestBody HistorySampahDto request) {
         dataSampahService.penjualanSampah(request.getListSampah());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+    @GetMapping("/history/pembelian")
+    public ResponseEntity<ApiResponse<List<HistoryPembelian>>> historyPembelian() {
+        List<HistoryPembelian> historyPembelian = dataSampahService.getAllHistoryPembelian();
+
+        return new ResponseEntity<>(new ApiResponse<>(historyPembelian), HttpStatus.OK);
+    }
+
+    @GetMapping("/history/penjualan")
+    public ResponseEntity<ApiResponse<List<HistoryPenjualan>>> historyPenjualan() {
+        List<HistoryPenjualan> historyPenjualan = dataSampahService.getAllHistoryPenjualan();
+
+        return new ResponseEntity<>(new ApiResponse<>(historyPenjualan), HttpStatus.OK);
+    }
+    
 }

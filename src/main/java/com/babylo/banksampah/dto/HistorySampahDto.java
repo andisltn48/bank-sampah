@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PembelianSampahDto {
+public class HistorySampahDto {
     @NotNull
     private List<Map<String, Object>> listSampah;
 }

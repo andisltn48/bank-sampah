@@ -27,6 +27,9 @@ public class HistoryPembelian {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "total_harga")
+    private Long totalHarga;
+
     @Column(name = "created_at")
     private Timestamp createdAt;
 

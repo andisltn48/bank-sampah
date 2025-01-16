@@ -84,6 +84,7 @@ public class DataSampahService {
         HistoryPembelian historyPembelian = new HistoryPembelian();
         
         HistoryPembelian savedHistoryPembelian = historyPembelianRepository.save(historyPembelian);
+        Long totalHargaPembelian = 0L;
         for (Map<String, Object> map : listSampah) {
             Long idSampah = ((Integer) map.get("id")).longValue();
             Optional<DataSampah> dataSampah = dataSampahRepository.findById(idSampah);
@@ -111,7 +112,11 @@ public class DataSampahService {
             listHistorySampah.setHarga(totalHarga);
             listHistorySampah.setType("Pembelian");
             listHistorySampahRepository.save(listHistorySampah);
+
+            totalHargaPembelian += totalHarga;
         }
+        savedHistoryPembelian.setTotalHarga(totalHargaPembelian);
+        historyPembelianRepository.save(savedHistoryPembelian);
     }
     
     @Transactional
@@ -119,6 +124,7 @@ public class DataSampahService {
         HistoryPenjualan historyPenjualan = new HistoryPenjualan();
         
         HistoryPenjualan savedHistoryPenjualan = historyPenjualanRepository.save(historyPenjualan);
+        Long totalHargaPenjualan = 0L;
         for (Map<String, Object> map : listSampah) {
             Long idSampah = ((Integer) map.get("id")).longValue();
             Optional<DataSampah> dataSampah = dataSampahRepository.findById(idSampah);
@@ -146,6 +152,21 @@ public class DataSampahService {
             listHistorySampah.setHarga(totalHarga);
             listHistorySampah.setType("Penjualan");
             listHistorySampahRepository.save(listHistorySampah);
+
+            totalHargaPenjualan += totalHarga;
         }
+
+        savedHistoryPenjualan.setTotalHarga(totalHargaPenjualan);
+        historyPenjualanRepository.save(savedHistoryPenjualan);
+    }
+
+    @Transactional
+    public List<HistoryPembelian> getAllHistoryPembelian() {
+        return historyPembelianRepository.findAll();
+    }
+
+    @Transactional
+    public List<HistoryPenjualan> getAllHistoryPenjualan() {
+        return historyPenjualanRepository.findAll();
     }
 }
