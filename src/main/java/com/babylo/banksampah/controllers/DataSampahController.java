@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.babylo.banksampah.dto.DataSampahDto;
+import com.babylo.banksampah.dto.PembelianSampahDto;
 import com.babylo.banksampah.entities.DataSampah;
 import com.babylo.banksampah.responses.ApiResponse;
 import com.babylo.banksampah.services.DataSampahService;
@@ -56,9 +57,15 @@ public class DataSampahController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteDataSampah(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteDataSampah(@PathVariable("id") Long id) {
         dataSampahService.deleteDataSampah(id);
-        return new ResponseEntity<>(new ApiResponse<>(null), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/pembelian")
+    public ResponseEntity<Void> pembelianSampah(@Valid @RequestBody PembelianSampahDto request) {
+        dataSampahService.pembelianSampah(request.getListSampah());
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
     
     
