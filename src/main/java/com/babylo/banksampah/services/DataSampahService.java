@@ -1,5 +1,6 @@
 package com.babylo.banksampah.services;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -168,5 +169,39 @@ public class DataSampahService {
     @Transactional
     public List<HistoryPenjualan> getAllHistoryPenjualan() {
         return historyPenjualanRepository.findAll();
+    }
+
+    @Transactional
+    public Map<String, Object> getDetailListPembelian(Long idHistory) {
+        HistoryPembelian historyPembelian = historyPembelianRepository.findById(idHistory).orElseThrow(() -> new DataNotFoundException("History pembelian tidak ditemukan"));
+
+        String type = "Pembelian";
+        List<ListHistorySampah> listHistorySampah = listHistorySampahRepository.findAllByIdHistoryAndType(idHistory, type);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", historyPembelian.getId());
+        result.put("totalHarga", historyPembelian.getTotalHarga());
+        result.put("createdAt", historyPembelian.getCreatedAt());
+        result.put("updatedAt", historyPembelian.getUpdatedAt());
+        result.put("history_sampah", listHistorySampah);
+
+        return result;
+    }
+
+    @Transactional
+    public Map<String, Object> getDetailListPenjualan(Long idHistory) {
+        HistoryPenjualan historyPenjualan = historyPenjualanRepository.findById(idHistory).orElseThrow(() -> new DataNotFoundException("History penjualan tidak ditemukan"));
+
+        String type = "Penjualan";
+        List<ListHistorySampah> listHistorySampah = listHistorySampahRepository.findAllByIdHistoryAndType(idHistory, type);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", historyPenjualan.getId());
+        result.put("totalHarga", historyPenjualan.getTotalHarga());
+        result.put("createdAt", historyPenjualan.getCreatedAt());
+        result.put("updatedAt", historyPenjualan.getUpdatedAt());
+        result.put("history_sampah", listHistorySampah);
+
+        return result;
     }
 }
