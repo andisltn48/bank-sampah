@@ -3,7 +3,9 @@ package com.babylo.banksampah.services;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,8 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService { 
     public static final String SECRET = "9D0EB6B1C2E1FAD0F53A248F6C3B5E4E2F6D8G3H1I0J7K4L1M9N2O3P5Q0R7S9T1U4V2W6X0Y32"; 
     public static final Integer EXPIRATION_TIME = 86400000; 
+    private Set<String> blacklistedTokens = new HashSet<>();
+
     public String generateToken(String userName) { 
         Map<String, Object> claims = new HashMap<>(); 
         return createToken(claims, userName); 
@@ -59,5 +63,13 @@ public class JwtService {
     public Boolean validateToken(String token, UserDetails userDetails) { 
         final String username = extractUsername(token); 
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token)); 
-    } 
+    }
+
+    public void blacklistToken(String token) {
+        blacklistedTokens.add(token);
+    }
+
+    public boolean isTokenBlacklisted(String token) {
+        return blacklistedTokens.contains(token);
+    }
 }

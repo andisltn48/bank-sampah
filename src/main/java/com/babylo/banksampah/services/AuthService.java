@@ -43,4 +43,8 @@ public class AuthService {
             throw new UnauthorizedException("Username or password wrong");
         }
     }
+
+    public void logout(String token) {
+        jwtService.blacklistToken(token);
+    }
 }

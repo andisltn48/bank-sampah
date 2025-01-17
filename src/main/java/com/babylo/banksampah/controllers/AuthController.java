@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @RestController
@@ -35,6 +36,12 @@ public class AuthController {
     public ResponseEntity<ApiResponse<TokenResponseDto>> login(@Valid @RequestBody LoginUserDto request) {
         TokenResponseDto token = authService.login(request);
         return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.OK);
+    }
+
+    @PostMapping("/api/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String header) {
+        authService.logout(header.substring(7));   
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
     
 }

@@ -18,7 +18,7 @@ import java.io.IOException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter { 
     private final JwtService jwtService; 
-    private final UserService userDetailsService; 
+    private final UserService userDetailsService;
     JwtAuthFilter(JwtService jwtService, UserService userDetailsService) { 
         this.jwtService = jwtService; 
         this.userDetailsService = userDetailsService; 
@@ -28,7 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization"); 
         String token = null; 
         String username = null; 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) { 
+        if (authHeader != null && authHeader.startsWith("Bearer ") && !jwtService.isTokenBlacklisted(authHeader.substring(7))) {
             token = authHeader.substring(7); 
             username = jwtService.extractUsername(token); 
         } 
