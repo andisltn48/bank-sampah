@@ -1,10 +1,15 @@
 package com.babylo.banksampah.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,21 +20,22 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListHistorySampah {
+public class ListHistoryPenjualan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_history")
-    private Long idHistory;
+    @ManyToOne
+    @JoinColumn(name = "id_history")
+    @JsonIgnore
+    private HistoryPenjualan historyPenjualan;
 
-    @Column(name = "id_sampah")
-    private Long idSampah;
+    @OneToOne
+    @JoinColumn(name = "id_sampah")
+    private DataSampah dataSampah;
 
     private Float jumlah;
 
     private Long harga;
-
-    private String type;
 }

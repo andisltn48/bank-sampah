@@ -93,17 +93,17 @@ public class DataSampahController {
     }
 
     @GetMapping("/history/pembelian/{id}")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> detailHistoryPembelian(@PathVariable("id") Long id) {
-        Map<String, Object> detailHistoryPembelian = dataSampahService.getDetailListPembelian(id);
+    public ResponseEntity<ApiResponse<HistoryPembelian>> detailHistoryPembelian(@PathVariable("id") Long id) {
+        HistoryPembelian detailHistoryPembelian = dataSampahService.getDetailListPembelian(id);
 
         return new ResponseEntity<>(new ApiResponse<>(detailHistoryPembelian), HttpStatus.OK);
     }
 
     @GetMapping("/history/penjualan/{id}")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> detailHistoryPenjualan(@PathVariable("id") Long id) {
-        Map<String, Object> detailHistoryPembelian = dataSampahService.getDetailListPenjualan(id);
+    public ResponseEntity<ApiResponse<HistoryPenjualan>> detailHistoryPenjualan(@PathVariable("id") Long id) {
+        HistoryPenjualan dHistoryPenjualan = dataSampahService.getDetailListPenjualan(id);
 
-        return new ResponseEntity<>(new ApiResponse<>(detailHistoryPembelian), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>(dHistoryPenjualan), HttpStatus.OK);
     }
     
 }

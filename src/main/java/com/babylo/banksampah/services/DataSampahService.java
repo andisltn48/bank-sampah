@@ -12,12 +12,14 @@ import com.babylo.banksampah.dto.DataSampahDto;
 import com.babylo.banksampah.entities.DataSampah;
 import com.babylo.banksampah.entities.HistoryPembelian;
 import com.babylo.banksampah.entities.HistoryPenjualan;
-import com.babylo.banksampah.entities.ListHistorySampah;
+import com.babylo.banksampah.entities.ListHistoryPembelian;
+import com.babylo.banksampah.entities.ListHistoryPenjualan;
 import com.babylo.banksampah.exception.DataNotFoundException;
 import com.babylo.banksampah.repositories.DataSampahRepository;
 import com.babylo.banksampah.repositories.HistoryPembelianRepository;
 import com.babylo.banksampah.repositories.HistoryPenjualanRepository;
-import com.babylo.banksampah.repositories.ListHistorySampahRepository;
+import com.babylo.banksampah.repositories.ListHistoryPembelianRepository;
+import com.babylo.banksampah.repositories.ListHistoryPenjualanRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -31,10 +33,13 @@ public class DataSampahService {
     private HistoryPembelianRepository historyPembelianRepository;
 
     @Autowired
-    private ListHistorySampahRepository listHistorySampahRepository;
+    private ListHistoryPembelianRepository ListHistoryPembelianRepository;
     
     @Autowired
     private HistoryPenjualanRepository historyPenjualanRepository;
+
+    @Autowired
+    private ListHistoryPenjualanRepository listHistoryPenjualanRepository;
 
     public DataSampah addDataSampah(DataSampahDto dataSampahDto) {
         DataSampah dataSampah = new DataSampah();
@@ -105,14 +110,13 @@ public class DataSampahService {
             }
             // Float jumlah = ((Double) map.get("jumlah")).floatValue();
             Long totalHarga = ((Integer) Math.round(existDataSampah.getHargaBeli() * jumlah)).longValue();
-            ListHistorySampah listHistorySampah = new ListHistorySampah();
+            ListHistoryPembelian ListHistoryPembelian = new ListHistoryPembelian();
 
-            listHistorySampah.setIdHistory(savedHistoryPembelian.getId());
-            listHistorySampah.setIdSampah(idSampah);
-            listHistorySampah.setJumlah(jumlah);
-            listHistorySampah.setHarga(totalHarga);
-            listHistorySampah.setType("Pembelian");
-            listHistorySampahRepository.save(listHistorySampah);
+            ListHistoryPembelian.setHistoryPembelian(savedHistoryPembelian);
+            ListHistoryPembelian.setDataSampah(existDataSampah);
+            ListHistoryPembelian.setJumlah(jumlah);
+            ListHistoryPembelian.setHarga(totalHarga);
+            ListHistoryPembelianRepository.save(ListHistoryPembelian);
 
             totalHargaPembelian += totalHarga;
         }
@@ -145,14 +149,13 @@ public class DataSampahService {
             }
             // Float jumlah = ((Double) map.get("jumlah")).floatValue();
             Long totalHarga = ((Integer) Math.round(existDataSampah.getHargaBeli() * jumlah)).longValue();
-            ListHistorySampah listHistorySampah = new ListHistorySampah();
+            ListHistoryPenjualan listHistoryPenjualan = new ListHistoryPenjualan();
 
-            listHistorySampah.setIdHistory(savedHistoryPenjualan.getId());
-            listHistorySampah.setIdSampah(idSampah);
-            listHistorySampah.setJumlah(jumlah);
-            listHistorySampah.setHarga(totalHarga);
-            listHistorySampah.setType("Penjualan");
-            listHistorySampahRepository.save(listHistorySampah);
+            listHistoryPenjualan.setHistoryPenjualan(savedHistoryPenjualan);
+            listHistoryPenjualan.setDataSampah(existDataSampah);
+            listHistoryPenjualan.setJumlah(jumlah);
+            listHistoryPenjualan.setHarga(totalHarga);
+            listHistoryPenjualanRepository.save(listHistoryPenjualan);
 
             totalHargaPenjualan += totalHarga;
         }
@@ -172,36 +175,16 @@ public class DataSampahService {
     }
 
     @Transactional
-    public Map<String, Object> getDetailListPembelian(Long idHistory) {
+    public HistoryPembelian getDetailListPembelian(Long idHistory) {
         HistoryPembelian historyPembelian = historyPembelianRepository.findById(idHistory).orElseThrow(() -> new DataNotFoundException("History pembelian tidak ditemukan"));
 
-        String type = "Pembelian";
-        List<ListHistorySampah> listHistorySampah = listHistorySampahRepository.findAllByIdHistoryAndType(idHistory, type);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("id", historyPembelian.getId());
-        result.put("totalHarga", historyPembelian.getTotalHarga());
-        result.put("createdAt", historyPembelian.getCreatedAt());
-        result.put("updatedAt", historyPembelian.getUpdatedAt());
-        result.put("history_sampah", listHistorySampah);
-
-        return result;
+        return historyPembelian;
     }
 
     @Transactional
-    public Map<String, Object> getDetailListPenjualan(Long idHistory) {
+    public HistoryPenjualan getDetailListPenjualan(Long idHistory) {
         HistoryPenjualan historyPenjualan = historyPenjualanRepository.findById(idHistory).orElseThrow(() -> new DataNotFoundException("History penjualan tidak ditemukan"));
 
-        String type = "Penjualan";
-        List<ListHistorySampah> listHistorySampah = listHistorySampahRepository.findAllByIdHistoryAndType(idHistory, type);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("id", historyPenjualan.getId());
-        result.put("totalHarga", historyPenjualan.getTotalHarga());
-        result.put("createdAt", historyPenjualan.getCreatedAt());
-        result.put("updatedAt", historyPenjualan.getUpdatedAt());
-        result.put("history_sampah", listHistorySampah);
-
-        return result;
+        return historyPenjualan;
     }
 }

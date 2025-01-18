@@ -1,38 +1,41 @@
 package com.babylo.banksampah.entities;
 
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "data_sampah")
-public class DataSampah {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ListHistoryPembelian {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nama_sampah")
-    private String namaSampah;
+    @ManyToOne
+    @JoinColumn(name = "id_history")
+    @JsonIgnore
+    private HistoryPembelian historyPembelian;
 
-    @Column(name = "harga_beli")
-    private Long hargaBeli;
+    @OneToOne
+    @JoinColumn(name = "id_sampah")
+    private DataSampah dataSampah;
 
-    @Column(name = "harga_jual")
-    private Long hargaJual;
+    private Float jumlah;
 
-    private String unit;
+    private Long harga;
 }
