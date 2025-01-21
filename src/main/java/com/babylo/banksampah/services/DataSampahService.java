@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.babylo.banksampah.dto.DataSampahDto;
@@ -19,6 +22,7 @@ import com.babylo.banksampah.repositories.HistoryPembelianRepository;
 import com.babylo.banksampah.repositories.HistoryPenjualanRepository;
 import com.babylo.banksampah.repositories.ListHistoryPembelianRepository;
 import com.babylo.banksampah.repositories.ListHistoryPenjualanRepository;
+import com.babylo.banksampah.repositories.spesifications.DataSampahSpecification;
 
 import jakarta.transaction.Transactional;
 
@@ -51,8 +55,9 @@ public class DataSampahService {
         return dataSampahRepository.save(dataSampah);
     }
 
-    public List<DataSampah> getAllDataSampah() {
-        return dataSampahRepository.findAll();
+    public Page<DataSampah> getAllDataSampah(String search, Pageable pageable) {
+        Specification<DataSampah> spec = DataSampahSpecification.searchByTerm(search);
+        return dataSampahRepository.findAll(spec,pageable);
     }
 
     public DataSampah getDetailSampah(Long id) {

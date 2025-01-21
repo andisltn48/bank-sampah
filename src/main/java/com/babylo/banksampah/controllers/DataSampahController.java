@@ -3,9 +3,12 @@ package com.babylo.banksampah.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.babylo.banksampah.dto.DataSampahDto;
@@ -42,8 +45,8 @@ public class DataSampahController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<DataSampah>>> getAllDataSampah() {
-        List<DataSampah> dataSampah = dataSampahService.getAllDataSampah();
+    public ResponseEntity<ApiResponse<Page<DataSampah>>> getAllDataSampah(@RequestParam(required = false, name = "search") String search, Pageable pageable) {
+        Page<DataSampah> dataSampah = dataSampahService.getAllDataSampah(search, pageable);
         return new ResponseEntity<>(new ApiResponse<>(dataSampah), HttpStatus.OK);
     }
     
