@@ -1,6 +1,7 @@
 package com.babylo.banksampah.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,8 +46,20 @@ public class DataSampahController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<Page<DataSampah>>> getAllDataSampah(@RequestParam(required = false, name = "search") String search, Pageable pageable) {
-        Page<DataSampah> dataSampah = dataSampahService.getAllDataSampah(search, pageable);
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getAllDataSampah(
+        @RequestParam(defaultValue = "id", name = "sortBy") String sortBy,
+        @RequestParam(defaultValue = "ASC", name = "sortDirection") String sortDirection,
+        @RequestParam(defaultValue = "1", name = "page") int page,
+        @RequestParam(defaultValue = "10", name = "size") int size,
+        @RequestParam(required = false, name = "search") String search
+    ) {
+        Map<String, Object> dataSampah = dataSampahService.getAllDataSampah(
+            sortBy,
+            sortDirection,
+            page,
+            size,
+            search
+        );
         return new ResponseEntity<>(new ApiResponse<>(dataSampah), HttpStatus.OK);
     }
     
