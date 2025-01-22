@@ -5,17 +5,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.babylo.banksampah.entities.DataSampah;
-import com.babylo.banksampah.repositories.DataSampahRepositoryCustom;
+import com.babylo.banksampah.entities.HistoryPembelian;
+import com.babylo.banksampah.repositories.HistoryPembelianRepositoryCustom;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 
-public class DataSampahRepositoryCustomImpl implements DataSampahRepositoryCustom {
+public class HistoryPembelianRepositoryCustomImpl implements HistoryPembelianRepositoryCustom {
 
     @Autowired
     private EntityManager entityManager;
 
-    public List<DataSampah> findAllDataSampah(
+    public List<HistoryPembelian> findAllHistoryPembelian(
         String searchTerm, 
         String orderByColumn, 
         String orderDirection,
@@ -34,7 +35,9 @@ public class DataSampahRepositoryCustomImpl implements DataSampahRepositoryCusto
         }
 
         // Build the dynamic query
-        String queryString = "SELECT * FROM data_sampah sampah ";
+        String queryString = "SELECT * FROM history_pembelian history "+
+        "RIGHT JOIN list_history_pembelian list ON history.id = list.id_history "+
+        "RIGHT JOIN data_sampah sampah ON list.id_sampah = sampah.id ";
         if (searchTerm != null && !searchTerm.isEmpty()) {
             queryString += "WHERE (sampah.nama_sampah LIKE ? OR sampah.unit LIKE ?) ";
         }

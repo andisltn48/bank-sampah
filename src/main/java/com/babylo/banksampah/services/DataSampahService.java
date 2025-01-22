@@ -60,7 +60,7 @@ public class DataSampahService {
             String searchText
     ) {
         page = page != null ? page - 1 : 0;
-        
+
         if (sortBy == null || sortBy.isEmpty()) {
             sortBy = "id"; // Default sort column
         }
@@ -209,8 +209,55 @@ public class DataSampahService {
     }
 
     @Transactional
-    public List<HistoryPembelian> getAllHistoryPembelian() {
-        return historyPembelianRepository.findAll();
+    public Map<String, Object> getAllHistoryPembelian(
+        String sortBy,
+        String sortDirection,
+        Integer page,
+        Integer size,
+        String searchText
+    ) {
+        page = page != null ? page - 1 : 0;
+
+        if (sortBy == null || sortBy.isEmpty()) {
+            sortBy = "id"; // Default sort column
+        }
+
+        if (sortDirection == null || sortDirection.isEmpty()) {
+            sortDirection = "ASC"; // Default sort direction
+        }
+
+        // Ensure valid sort direction (PostgreSQL expects 'ASC' or 'DESC')
+        if (!sortDirection.equalsIgnoreCase("ASC") && !sortDirection.equalsIgnoreCase("DESC")) {
+            sortDirection = "ASC"; // Default to 'ASC' if invalid
+        }
+
+        // Calculate the offset for pagination
+        int offset = page * size;
+
+        // Call repository to get the paginated, sorted, and searched products
+        List<HistoryPembelian> dataHistory = historyPembelianRepository.findAllHistoryPembelian(
+                searchText,
+                sortBy,
+                sortDirection,
+                size,
+                offset
+        );
+
+        // Get total products count for pagination metadata
+        long totalProducts = historyPembelianRepository.countHistoryPembelian(searchText);
+
+        // Calculate total pages
+        int totalPages = (int) Math.ceil((double) totalProducts / size);
+
+        // Return response with products and pagination metadata
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", dataHistory);
+        response.put("totalItems", totalProducts);
+        response.put("totalPages", totalPages);
+        response.put("currentPage", page);
+        response.put("pageSize", size);
+
+        return response;
     }
 
     @Transactional

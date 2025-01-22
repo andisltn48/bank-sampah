@@ -92,8 +92,20 @@ public class DataSampahController {
     }
 
     @GetMapping("/history/pembelian")
-    public ResponseEntity<ApiResponse<List<HistoryPembelian>>> historyPembelian() {
-        List<HistoryPembelian> historyPembelian = dataSampahService.getAllHistoryPembelian();
+    public ResponseEntity<ApiResponse<Map<String, Object>>> historyPembelian(
+        @RequestParam(defaultValue = "id", name = "sortBy") String sortBy,
+        @RequestParam(defaultValue = "ASC", name = "sortDirection") String sortDirection,
+        @RequestParam(defaultValue = "1", name = "page") int page,
+        @RequestParam(defaultValue = "10", name = "size") int size,
+        @RequestParam(required = false, name = "search") String search
+    ) {
+        Map<String, Object> historyPembelian = dataSampahService.getAllHistoryPembelian(
+            sortBy,
+            sortDirection,
+            page,
+            size,
+            search
+        );
 
         return new ResponseEntity<>(new ApiResponse<>(historyPembelian), HttpStatus.OK);
     }
