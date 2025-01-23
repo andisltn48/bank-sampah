@@ -24,9 +24,9 @@ public class HistoryPembelianRepositoryCustomImpl implements HistoryPembelianRep
         int offset
     ) {
         // Sanitize the input to avoid SQL injection
-        String validOrderByColumn = "id"; // Default column
+        String validOrderByColumn = "history.id"; // Default column
         if (orderByColumn != null && !orderByColumn.isEmpty()) {
-            validOrderByColumn = orderByColumn;
+            validOrderByColumn = "history."+orderByColumn;
         }
 
         String validOrderDirection = "ASC"; // Default direction
@@ -35,7 +35,8 @@ public class HistoryPembelianRepositoryCustomImpl implements HistoryPembelianRep
         }
 
         // Build the dynamic query
-        String queryString = "SELECT * FROM history_pembelian history "+
+        String queryString = "SELECT history.*, list.id_history, list.id_sampah, list.jumlah, list.harga, "+
+        "sampah.nama_sampah, sampah.unit, sampah.harga_beli, sampah.harga_jual FROM history_pembelian history "+
         "RIGHT JOIN list_history_pembelian list ON history.id = list.id_history "+
         "RIGHT JOIN data_sampah sampah ON list.id_sampah = sampah.id ";
         if (searchTerm != null && !searchTerm.isEmpty()) {
@@ -43,9 +44,8 @@ public class HistoryPembelianRepositoryCustomImpl implements HistoryPembelianRep
         }
         queryString += "ORDER BY " + validOrderByColumn + " " + validOrderDirection + " "
                 + "LIMIT "+limit+" OFFSET "+offset+" ";
-        
         // Create the query
-        Query query = entityManager.createNativeQuery(queryString, DataSampah.class);
+        Query query = entityManager.createNativeQuery(queryString, HistoryPembelian.class);
 
         if (searchTerm != null && !searchTerm.isEmpty()) {
             
@@ -54,6 +54,8 @@ public class HistoryPembelianRepositoryCustomImpl implements HistoryPembelianRep
         }
 
         // Execute the query
-        return query.getResultList();
+        List<HistoryPembelian> historyPembelian = query.getResultList();
+        
+        return historyPembelian;
     }
 }
